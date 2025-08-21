@@ -1,0 +1,311 @@
+{
+  "Apptrix": {
+    "Version": "1"
+  },
+  "Metadata": {},
+  "Screens": [
+    {
+      "Object": {
+        "Type": "*fyne.Container",
+        "Layout": "Center",
+        "Objects": [
+          {
+            "Type": "*fyne.Container",
+            "Layout": "VBox",
+            "Objects": [
+              {
+                "Type": "*fyne.Container",
+                "Layout": "HBox",
+                "Objects": [
+                  {
+                    "Type": "*canvas.Image",
+                    "Name": "iconImage",
+                    "Struct": {
+                      "Hidden": false,
+                      "File": "",
+                      "Resource": null,
+                      "Image": null,
+                      "Translucency": 0,
+                      "FillMode": 2,
+                      "ScaleMode": 0
+                    },
+                    "Properties": {
+                      "minHeight": "64",
+                      "minWidth": "64"
+                    }
+                  },
+                  {
+                    "Type": "*fyne.Container",
+                    "Layout": "VBox",
+                    "Name": "labelBox",
+                    "Objects": [
+                      {
+                        "Type": "*widget.Label",
+                        "Name": "mainLabel",
+                        "Struct": {
+                          "Hidden": false,
+                          "Text": "Welcome to MetroGnome!",
+                          "Alignment": 1,
+                          "Wrapping": 0,
+                          "TextStyle": {
+                            "Bold": true,
+                            "Italic": false,
+                            "Monospace": true,
+                            "Symbol": false,
+                            "TabWidth": 0,
+                            "Underline": false
+                          },
+                          "Truncation": 0,
+                          "Importance": 0,
+                          "SizeName": "",
+                          "Selectable": false
+                        }
+                      },
+                      {
+                        "Type": "*widget.Label",
+                        "Name": "statLabel",
+                        "Struct": {
+                          "Hidden": false,
+                          "Text": "",
+                          "Alignment": 1,
+                          "Wrapping": 0,
+                          "TextStyle": {
+                            "Bold": true,
+                            "Italic": true,
+                            "Monospace": true,
+                            "Symbol": false,
+                            "TabWidth": 0,
+                            "Underline": false
+                          },
+                          "Truncation": 0,
+                          "Importance": 0,
+                          "SizeName": "",
+                          "Selectable": false
+                        }
+                      }
+                    ],
+                    "Properties": {
+                      "dir": "vertical",
+                      "layout": "VBox",
+                      "name": "labelBox"
+                    }
+                  }
+                ],
+                "Properties": {
+                  "dir": "horizontal",
+                  "layout": "HBox"
+                }
+              },
+              {
+                "Type": "*widget.ProgressBar",
+                "Name": "pb",
+                "Struct": {
+                  "Hidden": false,
+                  "Min": 0,
+                  "Max": 1,
+                  "Value": 0
+                }
+              },
+              {
+                "Type": "*fyne.Container",
+                "Layout": "HBox",
+                "Name": "wideBox",
+                "Objects": [
+                  {
+                    "Type": "*fyne.Container",
+                    "Layout": "VBox",
+                    "Objects": [
+                      {
+                        "Type": "*widget.Button",
+                        "Name": "startButton",
+                        "Actions": {
+                          "OnTapped": "g.startTap"
+                        },
+                        "Struct": {
+                          "Hidden": false,
+                          "Text": "Start",
+                          "Icon": "MediaPlayIcon",
+                          "Importance": 0,
+                          "Alignment": 0,
+                          "IconPlacement": 0
+                        },
+                        "Properties": {
+                          "OnTapped": "g.startTap"
+                        }
+                      },
+                      {
+                        "Type": "*widget.Button",
+                        "Name": "stopButton",
+                        "Actions": {
+                          "OnTapped": "g.stopTap"
+                        },
+                        "Struct": {
+                          "Hidden": false,
+                          "Text": "Stop",
+                          "Icon": "MediaStopIcon",
+                          "Importance": 0,
+                          "Alignment": 0,
+                          "IconPlacement": 0
+                        },
+                        "Properties": {
+                          "OnTapped": "g.stopTap"
+                        }
+                      },
+                      {
+                        "Type": "*widget.Button",
+                        "Name": "pauseButton",
+                        "Actions": {
+                          "OnTapped": "g.pauseTap"
+                        },
+                        "Struct": {
+                          "Hidden": false,
+                          "Text": "Pause",
+                          "Icon": "MediaPauseIcon",
+                          "Importance": 0,
+                          "Alignment": 0,
+                          "IconPlacement": 0
+                        },
+                        "Properties": {
+                          "OnTapped": "g.pauseTap"
+                        }
+                      },
+                      {
+                        "Type": "*widget.Button",
+                        "Name": "restartButton",
+                        "Actions": {
+                          "OnTapped": "g.restartTap"
+                        },
+                        "Struct": {
+                          "Hidden": false,
+                          "Text": "Restart",
+                          "Icon": "MediaReplayIcon",
+                          "Importance": 0,
+                          "Alignment": 0,
+                          "IconPlacement": 0
+                        },
+                        "Properties": {
+                          "OnTapped": "g.restartTap"
+                        }
+                      },
+                      {
+                        "Type": "*widget.Button",
+                        "Actions": {
+                          "OnTapped": "g.upTap"
+                        },
+                        "Struct": {
+                          "Hidden": false,
+                          "Text": "Faster",
+                          "Icon": "MoveUpIcon",
+                          "Importance": 0,
+                          "Alignment": 0,
+                          "IconPlacement": 0
+                        },
+                        "Properties": {
+                          "OnTapped": "g.upTap"
+                        }
+                      },
+                      {
+                        "Type": "*widget.Button",
+                        "Actions": {
+                          "OnTapped": "g.downTap"
+                        },
+                        "Struct": {
+                          "Hidden": false,
+                          "Text": "Slower",
+                          "Icon": "MoveDownIcon",
+                          "Importance": 0,
+                          "Alignment": 0,
+                          "IconPlacement": 0
+                        },
+                        "Properties": {
+                          "OnTapped": "g.downTap"
+                        }
+                      },
+                      {
+                        "Type": "*widget.Button",
+                        "Name": "muteButton",
+                        "Actions": {
+                          "OnTapped": "g.muteAction"
+                        },
+                        "Struct": {
+                          "Hidden": false,
+                          "Text": "Mute",
+                          "Icon": "VolumeMuteIcon",
+                          "Importance": 0,
+                          "Alignment": 0,
+                          "IconPlacement": 0
+                        },
+                        "Properties": {
+                          "OnTapped": "g.muteAction"
+                        }
+                      }
+                    ],
+                    "Properties": {
+                      "dir": "vertical",
+                      "layout": "VBox",
+                      "name": ""
+                    }
+                  },
+                  {
+                    "Type": "*fyne.Container",
+                    "Layout": "VBox",
+                    "Objects": [
+                      {
+                        "Type": "*widget.Select",
+                        "Name": "gnomeSelect",
+                        "Struct": {
+                          "Hidden": false,
+                          "Alignment": 0,
+                          "Selected": "",
+                          "Options": [
+                            ""
+                          ],
+                          "PlaceHolder": "(Select one)"
+                        }
+                      },
+                      {
+                        "Type": "*canvas.Image",
+                        "Name": "gnomes",
+                        "Struct": {
+                          "Hidden": false,
+                          "File": "",
+                          "Resource": null,
+                          "Image": null,
+                          "Translucency": 0,
+                          "FillMode": 0,
+                          "ScaleMode": 0
+                        },
+                        "Properties": {
+                          "minHeight": "256",
+                          "minWidth": "256"
+                        }
+                      }
+                    ],
+                    "Properties": {
+                      "dir": "vertical",
+                      "layout": "VBox"
+                    }
+                  }
+                ],
+                "Properties": {
+                  "dir": "horizontal",
+                  "layout": "HBox",
+                  "name": "wideBox"
+                }
+              }
+            ],
+            "Properties": {
+              "dir": "vertical",
+              "layout": "VBox",
+              "name": ""
+            }
+          }
+        ],
+        "Properties": {
+          "layout": "Center"
+        }
+      },
+      "Name": ""
+    }
+  ]
+}
