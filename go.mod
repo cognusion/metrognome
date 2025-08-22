@@ -3,7 +3,7 @@ module github.com/cognusion/metrognome
 go 1.25.0
 
 require (
-	fyne.io/fyne/v2 v2.6.2
+	fyne.io/fyne/v2 v2.6.3
 	github.com/cognusion/go-gnome v0.3.0
 	github.com/cognusion/go-recyclable v1.2.0
 )
