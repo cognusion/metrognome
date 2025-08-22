@@ -204,7 +204,7 @@ func (g *gui) gnomeSetup() {
 	buff = gnome.RPool.Get()
 	buff.Reset(wavData)
 
-	mg, err = gnome.NewGnomeBufferTick(buff, 60, tf)
+	mg, err = gnome.NewGnomeFromBuffer(buff, gnome.NewTimeSignature(4, 4, 60), tf)
 	if err != nil {
 		panic(err)
 	}
