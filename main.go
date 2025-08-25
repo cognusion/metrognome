@@ -11,10 +11,15 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/cognusion/go-gnome"
 	"github.com/cognusion/go-recyclable"
+	"github.com/spf13/pflag"
 )
 
-// tempoDelta is the step up or down the tempo changes.
-const tempoDelta = int32(10)
+const (
+	// terminalUIDefault is the default value for the --terminal flag
+	// One can forsee perhaps some wishing it was the normal instead
+	// of the exception.
+	terminalUIDefault = false
+)
 
 var (
 	// this is our 'gnome
@@ -22,6 +27,14 @@ var (
 
 	// a map to coordinate the gnomes.
 	gnomes randomByteMap
+
+	terminalUI bool
+	runTUIfunc func(*gnome.Gnome)
+
+	// global tunables
+	tempoBPM        int32 = 60
+	tempoDelta      int32 = 10
+	beatsPerMeasure int32 = 4
 )
 
 func init() {
@@ -45,18 +58,36 @@ func init() {
 }
 
 func main() {
-	a := app.New()
-	a.SetIcon(&fyne.StaticResource{StaticName: "Icon.png", StaticContent: iconData})
+	pflag.BoolVarP(&terminalUI, "terminal", "t", terminalUIDefault, "Use the TUI is used instead of the GUI?")
+	pflag.Int32Var(&tempoBPM, "tempo", 60, "Tempo BPM to start with (TUI and GUI)")
+	pflag.Int32Var(&tempoDelta, "delta", 10, "BPM steps when doing up or down in tempo (TUI and GUI)")
+	pflag.Int32Var(&beatsPerMeasure, "beats", 4, "Beats-per-measure to start with (TUI and GUI)")
 
-	loadTheme(a)
+	pflag.CommandLine.SortFlags = false // we want them in the order we put them
+	pflag.Parse()
 
-	g := newGUI()
-	w := g.makeWindow(a)
+	if terminalUI {
+		// TUI!!
+		if runTUIfunc == nil {
+			panic(fmt.Errorf("terminal UI requested but unhinged"))
+		}
 
-	g.setupActions()
-	defer mg.Close() // cleanups!
+		runTUIfunc(mg) // blocks
+	} else {
+		// Fyne!!
+		a := app.New()
+		a.SetIcon(&fyne.StaticResource{StaticName: "Icon.png", StaticContent: iconData})
 
-	w.ShowAndRun()
+		loadTheme(a)
+
+		g := newGUI()
+		w := g.makeWindow(a)
+
+		g.setupActions()
+		defer mg.Close() // cleanups!
+
+		w.ShowAndRun()
+	}
 }
 
 // randomByteMap is a map-string-pointer-to-byte-slice, that supports
@@ -112,7 +143,7 @@ func (g *gui) setupActions() {
 	// Set up the time signature picker
 	// We pre-populate the most commons sigs, but support entry too.
 	tsp := widget.NewSelectEntry([]string{"2/2", "2/4", "3/4", "4/4", "6/8"})
-	tsp.SetText("4/4") // default
+	tsp.SetText(fmt.Sprintf("%d/4", beatsPerMeasure)) // default
 	tsp.OnChanged = func(ts string) {
 		err := mg.TS.FromString(ts)
 		if err != nil {
@@ -169,7 +200,7 @@ func (g *gui) gnomeSetup() {
 	buff = gnome.RPool.Get()
 	buff.Reset(wavData)
 
-	mg, err = gnome.NewGnomeFromBuffer(buff, gnome.NewTimeSignature(4, 4, 60), tf)
+	mg, err = gnome.NewGnomeFromBuffer(buff, gnome.NewTimeSignature(beatsPerMeasure, 4, tempoBPM), tf)
 	if err != nil {
 		panic(err)
 	}
