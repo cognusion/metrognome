@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
@@ -26,6 +27,8 @@ type keyMap struct {
 	Up    key.Binding
 	Down  key.Binding
 	Pause key.Binding
+	Mute  key.Binding
+	Drift key.Binding
 	Help  key.Binding
 	Quit  key.Binding
 }
@@ -36,8 +39,8 @@ func (k keyMap) ShortHelp() []key.Binding {
 
 func (k keyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
-		{k.Up, k.Down, k.Pause}, // first column
-		{k.Help, k.Quit},        // second column
+		{k.Up, k.Down, k.Pause, k.Mute}, // first column
+		{k.Drift, k.Help, k.Quit},       // second column
 	}
 }
 
@@ -54,6 +57,14 @@ var keys = keyMap{
 		key.WithKeys("p"),
 		key.WithHelp("p", "Pause/Resume"),
 	),
+	Mute: key.NewBinding(
+		key.WithKeys("m"),
+		key.WithHelp("m", "Mute/Unmute"),
+	),
+	Drift: key.NewBinding(
+		key.WithKeys("d"),
+		key.WithHelp("d", "Display drift"),
+	),
 	Help: key.NewBinding(
 		key.WithKeys("?"),
 		key.WithHelp("?", "toggle help"),
@@ -66,20 +77,32 @@ var keys = keyMap{
 
 func runTUI(g *gnome.Gnome) {
 	var (
-		err      error
-		tf       func(int)
-		buff     *recyclable.Buffer
-		tickChan = make(chan string, 1)
+		err       error
+		tf        func(int)
+		buff      *recyclable.Buffer
+		tickChan  = make(chan string, 1)
+		startTime time.Time
+		lastDrift time.Duration
+		interval  = gnome.FromBPM(tempoBPM)
+		its       int64
 		//statChan = make(chan string, 1)
 	)
 
 	// Every time there is a tick, print a star.
 	tf = func(beat int) {
+		its++
+		ntime := startTime.Add(interval * time.Duration(its))
+		lastDrift = time.Since(ntime)
 		if beat == int(g.TS.Beats.Load()) {
 			tickChan <- fmt.Sprintf("%d|", beat)
 		} else {
 			tickChan <- fmt.Sprintf("%d", beat)
 		}
+	}
+
+	rt := func() {
+		its = 0
+		startTime = time.Now()
 	}
 
 	// Get a buffer and pass it on
@@ -107,6 +130,9 @@ func runTUI(g *gnome.Gnome) {
 		keys:       keys,
 		help:       help.New(),
 		inputStyle: lipgloss.NewStyle().Foreground(lipgloss.Color("#FF75B7")),
+		startTime:  &startTime,
+		lastDrift:  &lastDrift,
+		resetTime:  rt,
 	})
 	tg.Run()
 
@@ -115,19 +141,23 @@ func runTUI(g *gnome.Gnome) {
 type tickMsg string
 
 type tuiGnome struct {
-	Gnome       *gnome.Gnome
-	Buffer      *recyclable.Buffer
-	tickChan    chan string
-	lastMessage string
-	//statChan chan string
-	width      int
-	height     int
-	keys       keyMap
-	help       help.Model
-	inputStyle lipgloss.Style
+	Gnome        *gnome.Gnome
+	Buffer       *recyclable.Buffer
+	startTime    *time.Time
+	resetTime    func()
+	tickChan     chan string
+	lastMessage  string
+	lastDrift    *time.Duration
+	displayDrift bool
+	width        int
+	height       int
+	keys         keyMap
+	help         help.Model
+	inputStyle   lipgloss.Style
 }
 
 func (g tuiGnome) Init() tea.Cmd {
+	*g.startTime = time.Now()
 	g.Gnome.Start()
 	g.lastMessage = "RUNNING"
 	return g.tick
@@ -151,6 +181,7 @@ func (g tuiGnome) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			g.help.ShowAll = !g.help.ShowAll
 		case key.Matches(msg, g.keys.Pause):
 			g.Gnome.Pause()
+			g.resetTime()
 			return g, nil
 		case key.Matches(msg, g.keys.Up):
 			new := g.Gnome.TS.Tempo.Add(tempoDelta)
@@ -167,6 +198,12 @@ func (g tuiGnome) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			g.lastMessage = fmt.Sprintf("TEMPO -%d", tempoDelta)
 			return g, nil
+		case key.Matches(msg, g.keys.Mute):
+			g.Gnome.Mute()
+			g.lastMessage = "MUTE"
+		case key.Matches(msg, g.keys.Drift):
+			// Toggle the boolean for displaying drift
+			g.displayDrift = !g.displayDrift
 		}
 
 	case tea.WindowSizeMsg:
@@ -189,7 +226,12 @@ func (g tuiGnome) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (g tuiGnome) View() string {
-	var status = g.Gnome.TS.String() + " - " + g.lastMessage + "\n" + wordwrap.String(g.Buffer.String(), g.width) + "\n"
+	var extra string
+	if g.displayDrift {
+		extra = fmt.Sprintf(" - Drift: %s", g.lastDrift.String())
+	}
+
+	var status = fmt.Sprintf("%s - %s%s\n%s\n", g.Gnome.TS.String(), g.lastMessage, extra, wordwrap.String(g.Buffer.String(), g.width))
 
 	if g.Gnome.IsPaused() {
 		status = "PAUSED - " + status
