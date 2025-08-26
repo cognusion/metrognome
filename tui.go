@@ -38,9 +38,11 @@ func (k keyMap) ShortHelp() []key.Binding {
 }
 
 func (k keyMap) FullHelp() [][]key.Binding {
+	// trying to keep each column <= 3 lines
 	return [][]key.Binding{
-		{k.Up, k.Down, k.Pause, k.Mute}, // first column
-		{k.Drift, k.Help, k.Quit},       // second column
+		{k.Up, k.Down},             // first column
+		{k.Pause, k.Mute, k.Drift}, // second column
+		{k.Help, k.Quit},           // third column
 	}
 }
 
@@ -83,7 +85,6 @@ func runTUI(g *gnome.Gnome) {
 		tickChan  = make(chan string, 1)
 		startTime time.Time
 		lastDrift time.Duration
-		interval  = gnome.FromBPM(tempoBPM)
 		its       int64
 		//statChan = make(chan string, 1)
 	)
@@ -91,7 +92,7 @@ func runTUI(g *gnome.Gnome) {
 	// Every time there is a tick, print a star.
 	tf = func(beat int) {
 		its++
-		ntime := startTime.Add(interval * time.Duration(its))
+		ntime := startTime.Add(g.TS.TempoToDuration() * time.Duration(its))
 		lastDrift = time.Since(ntime)
 		if beat == int(g.TS.Beats.Load()) {
 			tickChan <- fmt.Sprintf("%d|", beat)
@@ -173,22 +174,30 @@ func (g tuiGnome) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, g.keys.Quit):
+			// Quit
 			defer g.Close()
 			g.lastMessage = "QUITTING"
 			return g, tea.Quit
 
 		case key.Matches(msg, g.keys.Help):
+			// Help
 			g.help.ShowAll = !g.help.ShowAll
+
 		case key.Matches(msg, g.keys.Pause):
+			// Pause
 			g.Gnome.Pause()
 			g.resetTime()
 			return g, nil
+
 		case key.Matches(msg, g.keys.Up):
+			// Up
 			new := g.Gnome.TS.Tempo.Add(tempoDelta)
 			g.Gnome.Change(new)
 			g.lastMessage = fmt.Sprintf("TEMPO +%d", tempoDelta)
 			return g, nil
+
 		case key.Matches(msg, g.keys.Down):
+			// Down
 			new := g.Gnome.TS.Tempo.Add(-1 * tempoDelta)
 			if new <= 0 {
 				// Safety
@@ -198,11 +207,14 @@ func (g tuiGnome) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			g.lastMessage = fmt.Sprintf("TEMPO -%d", tempoDelta)
 			return g, nil
+
 		case key.Matches(msg, g.keys.Mute):
+			// Mute
 			g.Gnome.Mute()
 			g.lastMessage = "MUTE"
+
 		case key.Matches(msg, g.keys.Drift):
-			// Toggle the boolean for displaying drift
+			// Drift
 			g.displayDrift = !g.displayDrift
 		}
 
@@ -238,7 +250,7 @@ func (g tuiGnome) View() string {
 	}
 
 	helpView := g.help.View(g.keys)
-	height := 6 - strings.Count(status, "\n") - strings.Count(helpView, "\n")
+	height := 5 - strings.Count(status, "\n") - strings.Count(helpView, "\n")
 
 	return "\n" + status + strings.Repeat("\n", height) + helpView
 }
