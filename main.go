@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"slices"
 	"strconv"
+	"strings"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -128,6 +129,13 @@ func beatString(beatsPerMeasure int32) string {
 	return beats
 }
 
+func beatStringToTickFilter(beatString string) func(int) bool {
+	tf := func(beat int) bool {
+		return strings.Contains(beatString, strconv.Itoa(beat))
+	}
+	return tf
+}
+
 // here you can add some button / callbacks code using widget IDs
 func (g *gui) setupActions() {
 	g.restartButton.Disable()
@@ -157,13 +165,12 @@ func (g *gui) setupActions() {
 			return
 		}
 		beats := mg.TS.Beats.Load()
-		g.hitEntry.Text = beatString(beats)
+		g.setHitEntry(beatString(beats))
 		g.hitEntry.Refresh()
 		g.ChangeStat()            // Update the stat label
 		g.pb.Max = float64(beats) // Update the progressbar, as the beat count may have changed.
 	}
 	g.labelBox.Add(tsp)
-	g.hitEntry.Text = beatString(beatsPerMeasure)
 	g.labelBox.Refresh()
 
 	// Setup the Gnome!
@@ -172,12 +179,32 @@ func (g *gui) setupActions() {
 	// Setup the stat label
 	g.ChangeStat()
 
+	// Setup the hitEntry
+	g.setHitEntry(beatString(beatsPerMeasure))
+	g.hitEntry.OnChanged = func(beatString string) {
+		tf := beatStringToTickFilter(beatString)
+		if err := mg.SetTickFilter(tf); err != nil {
+			// The only error is if tf is nil. Impossible!
+			panic(err)
+		}
+	}
+
 	// Set the progressbar text to be more musical and less percenty.
 	g.pb.TextFormatter = func() string {
 		return fmt.Sprintf("%.0f", g.pb.Value)
 	}
 	g.pb.Max = float64(mg.TS.Beats.Load()) // Update the progress bar to track beat count
 	g.pb.SetValue(0)
+}
+
+func (g *gui) setHitEntry(beatString string) {
+	g.hitEntry.Text = beatString
+	g.hitEntry.Refresh()
+	tf := beatStringToTickFilter(beatString)
+	if err := mg.SetTickFilter(tf); err != nil {
+		// The only error is if tf is nil. Impossible!
+		panic(err)
+	}
 }
 
 // setGnomes changes the musical gnome
