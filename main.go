@@ -124,12 +124,7 @@ func (g *gui) setupActions() {
 	g.restartButton.Disable()
 	g.pauseButton.Disable()
 
-	// Since adding 256x256 gnomes to an imageBox, it seems silly to also have the icon reproduced on the screen.
-	// Code is still here in case.
-
-	// Add the icon to iconImage
-	//g.iconImage.Resource = &fyne.StaticResource{StaticName: "Icon.png", StaticContent: iconData}
-	//g.iconImage.Refresh()
+	g.win.SetTitle("MetroGnome")
 
 	// Pull the list of instruments and set the picker :)
 	g.gnomeSelect.Options = gnomes.Keys()
@@ -142,6 +137,7 @@ func (g *gui) setupActions() {
 
 	// Set up the time signature picker
 	// We pre-populate the most commons sigs, but support entry too.
+	// apptrix (Fyne UI) doesn't support SelectEntry, so we programatically add this to the box.
 	tsp := widget.NewSelectEntry([]string{"2/2", "2/4", "3/4", "4/4", "6/8"})
 	tsp.SetText(fmt.Sprintf("%d/4", beatsPerMeasure)) // default
 	tsp.OnChanged = func(ts string) {
@@ -154,7 +150,7 @@ func (g *gui) setupActions() {
 		g.ChangeStat()                         // Update the stat label
 		g.pb.Max = float64(mg.TS.Beats.Load()) // Update the progressbar, as the beat count may have changed.
 	}
-	g.labelBox.Add(tsp) // apptrix (Fyne UI) doesn't support SelectEntry, so we programatically add this to the box.
+	g.labelBox.Add(tsp)
 	g.labelBox.Refresh()
 
 	// Setup the Gnome!
@@ -171,10 +167,12 @@ func (g *gui) setupActions() {
 	g.pb.SetValue(0)
 }
 
-// setGnomes is only designed to be called with KNOWN GOOD STRINGS else panic.
+// setGnomes changes the musical gnome
 func (g *gui) setGnomes(instrument string) {
-	g.gnomes.Resource = &fyne.StaticResource{StaticContent: *gnomes[instrument]}
-	g.gnomes.Refresh()
+	if bard, ok := gnomes[instrument]; ok {
+		g.gnomes.Resource = &fyne.StaticResource{StaticContent: *bard}
+		g.gnomes.Refresh()
+	}
 }
 
 // ChangeStat updates the statLabel
