@@ -63,7 +63,7 @@ func init() {
 		"Violin":      &gnomeViolin,
 	}
 
-	helpURL, _ = url.Parse("https://github.com/cognusion/metrognome/")
+	helpURL, _ = url.Parse("https://github.com/cognusion/metrognome/blob/main/help/README.md")
 }
 
 func main() {
