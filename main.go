@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"net/url"
 	"slices"
 	"strconv"
 	"strings"
@@ -30,6 +31,10 @@ var (
 	// a map to coordinate the gnomes.
 	gnomes randomByteMap
 
+	// help is here
+	helpURL *url.URL
+
+	// TUI globals, because TUI is a conditional compile (!WASM)
 	terminalUI bool
 	runTUIfunc func(*gnome.Gnome)
 
@@ -57,6 +62,8 @@ func init() {
 		"Tuba":        &gnomeTuba,
 		"Violin":      &gnomeViolin,
 	}
+
+	helpURL, _ = url.Parse("https://github.com/cognusion/metrognome/")
 }
 
 func main() {
@@ -303,4 +310,11 @@ func (g *gui) muteAction() {
 		g.muteButton.Text = "Mute"
 	}
 	g.muteButton.Refresh()
+}
+
+func (g *gui) helpTap() {
+	err := fyne.CurrentApp().OpenURL(helpURL)
+	if err != nil {
+		dialog.ShowError(err, g.win)
+	}
 }

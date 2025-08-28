@@ -2,7 +2,10 @@
   "Apptrix": {
     "Version": "1"
   },
-  "Metadata": {},
+  "Metadata": {
+    "height": 474,
+    "width": 396
+  },
   "Screens": [
     {
       "Object": {
@@ -261,6 +264,24 @@
                         },
                         "Properties": {
                           "OnTapped": "g.muteAction"
+                        }
+                      },
+                      {
+                        "Type": "*widget.Button",
+                        "Name": "helpButton",
+                        "Actions": {
+                          "OnTapped": "g.helpTap"
+                        },
+                        "Struct": {
+                          "Hidden": false,
+                          "Text": "Help",
+                          "Icon": "HelpIcon",
+                          "Importance": 0,
+                          "Alignment": 0,
+                          "IconPlacement": 0
+                        },
+                        "Properties": {
+                          "OnTapped": "g.helpTap"
                         }
                       }
                     ],
