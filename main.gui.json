@@ -82,6 +82,30 @@
                           "SizeName": "",
                           "Selectable": false
                         }
+                      },
+                      {
+                        "Type": "*widget.Entry",
+                        "Name": "hitEntry",
+                        "Struct": {
+                          "Hidden": false,
+                          "Text": "",
+                          "TextStyle": {
+                            "Bold": false,
+                            "Italic": false,
+                            "Monospace": false,
+                            "Symbol": false,
+                            "TabWidth": 0,
+                            "Underline": false
+                          },
+                          "PlaceHolder": "hit pattern",
+                          "Password": false,
+                          "MultiLine": false,
+                          "Wrapping": 1,
+                          "Scroll": 0,
+                          "AlwaysShowValidationError": false,
+                          "CursorRow": 0,
+                          "CursorColumn": 0
+                        }
                       }
                     ],
                     "Properties": {

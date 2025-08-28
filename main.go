@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"slices"
+	"strconv"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -119,6 +120,14 @@ func (r randomByteMap) Keys() []string {
 	return keys
 }
 
+func beatString(beatsPerMeasure int32) string {
+	var beats string
+	for n := range int(beatsPerMeasure) {
+		beats += strconv.Itoa(n + 1)
+	}
+	return beats
+}
+
 // here you can add some button / callbacks code using widget IDs
 func (g *gui) setupActions() {
 	g.restartButton.Disable()
@@ -147,10 +156,14 @@ func (g *gui) setupActions() {
 			dialog.ShowError(fmt.Errorf(" Invalid Signature"), g.win)
 			return
 		}
-		g.ChangeStat()                         // Update the stat label
-		g.pb.Max = float64(mg.TS.Beats.Load()) // Update the progressbar, as the beat count may have changed.
+		beats := mg.TS.Beats.Load()
+		g.hitEntry.Text = beatString(beats)
+		g.hitEntry.Refresh()
+		g.ChangeStat()            // Update the stat label
+		g.pb.Max = float64(beats) // Update the progressbar, as the beat count may have changed.
 	}
 	g.labelBox.Add(tsp)
+	g.hitEntry.Text = beatString(beatsPerMeasure)
 	g.labelBox.Refresh()
 
 	// Setup the Gnome!

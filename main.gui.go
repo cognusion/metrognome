@@ -16,6 +16,7 @@ type gui struct {
 
 	gnomeSelect   *widget.Select
 	gnomes        *canvas.Image
+	hitEntry      *widget.Entry
 	iconImage     *canvas.Image
 	mainLabel     *widget.Label
 	muteButton    *widget.Button
@@ -40,6 +41,7 @@ func (g *gui) makeUI() fyne.CanvasObject {
 		img.SetMinSize(fyne.Size{Width: 256, Height: 256})
 		return img
 	}()
+	g.hitEntry = &widget.Entry{Text: "", PlaceHolder: "hit pattern", MultiLine: false, Password: false}
 	g.iconImage = func() *canvas.Image {
 		img := &canvas.Image{File: "", FillMode: canvas.ImageFillOriginal}
 		img.SetMinSize(fyne.Size{Width: 64, Height: 64})
@@ -55,7 +57,8 @@ func (g *gui) makeUI() fyne.CanvasObject {
 	g.stopButton = widget.NewButtonWithIcon("Stop", theme.MediaStopIcon(), g.stopTap)
 	g.labelBox = container.NewVBox(
 		g.mainLabel,
-		g.statLabel)
+		g.statLabel,
+		g.hitEntry)
 	g.wideBox = container.NewHBox(
 		container.NewVBox(
 			g.startButton,
