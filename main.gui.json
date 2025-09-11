@@ -3,8 +3,8 @@
     "Version": "1"
   },
   "Metadata": {
-    "height": 492,
-    "width": 400
+    "height": 514,
+    "width": 404
   },
   "Screens": [
     {
@@ -264,6 +264,24 @@
                         },
                         "Properties": {
                           "OnTapped": "g.muteAction"
+                        }
+                      },
+                      {
+                        "Type": "*widget.Button",
+                        "Name": "panButton",
+                        "Actions": {
+                          "OnTapped": "g.panTap"
+                        },
+                        "Struct": {
+                          "Hidden": false,
+                          "Text": "Pan",
+                          "Icon": "ViewRefreshIcon",
+                          "Importance": 0,
+                          "Alignment": 0,
+                          "IconPlacement": 0
+                        },
+                        "Properties": {
+                          "OnTapped": "g.panTap"
                         }
                       },
                       {

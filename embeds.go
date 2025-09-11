@@ -10,14 +10,28 @@ var (
 	//go:embed Icon.png
 	iconData []byte // our icon
 
+	// All sounds must be 44100 Hz or they will have oddities.
+
 	//go:embed sounds/metronome2.wav
-	woodblockData []byte // our 'gnome sound
+	woodblockData []byte
 	//go:embed sounds/maracas.wav
-	maracasData []byte // our 'gnome sound
+	maracasData []byte
+	//go:embed sounds/finger_cymbals.wav
+	fcymbalsData []byte
+	//go:embed sounds/bass_g.wav
+	bassgData []byte
+	//go:embed sounds/cowbell.wav
+	cowbellData []byte
+	//go:embed sounds/rimshot.wav
+	rimshotData []byte
 
 	sounds randomByteMap = map[string]*[]byte{
-		"Woodblock": &woodblockData,
-		"Maracas":   &maracasData,
+		"Woodblock":      &woodblockData,
+		"Maracas":        &maracasData,
+		"Finger Cymbals": &fcymbalsData,
+		"Double Bass":    &bassgData,
+		"Cowbell":        &cowbellData,
+		"Rimshot":        &rimshotData,
 	}
 
 	//go:embed images/MetroGnomeDS-Portrait.png

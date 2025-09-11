@@ -21,6 +21,7 @@ type gui struct {
 	iconImage     *canvas.Image
 	mainLabel     *widget.Label
 	muteButton    *widget.Button
+	panButton     *widget.Button
 	pauseButton   *widget.Button
 	pb            *widget.ProgressBar
 	restartButton *widget.Button
@@ -52,6 +53,7 @@ func (g *gui) makeUI() fyne.CanvasObject {
 	}()
 	g.mainLabel = &widget.Label{Text: "Welcome to MetroGnome!", TextStyle: fyne.TextStyle{Bold: true, Italic: false, Monospace: true, Symbol: false, TabWidth: 0, Underline: false}, Alignment: 1, Wrapping: 0}
 	g.muteButton = widget.NewButtonWithIcon("Mute", theme.VolumeMuteIcon(), g.muteAction)
+	g.panButton = widget.NewButtonWithIcon("Pan", theme.ViewRefreshIcon(), g.panTap)
 	g.pauseButton = widget.NewButtonWithIcon("Pause", theme.MediaPauseIcon(), g.pauseTap)
 	g.pb = &widget.ProgressBar{Value: 0.000000}
 	g.restartButton = widget.NewButtonWithIcon("Restart", theme.MediaReplayIcon(), g.restartTap)
@@ -72,6 +74,7 @@ func (g *gui) makeUI() fyne.CanvasObject {
 			widget.NewButtonWithIcon("Faster", theme.MoveUpIcon(), g.upTap),
 			widget.NewButtonWithIcon("Slower", theme.MoveDownIcon(), g.downTap),
 			g.muteButton,
+			g.panButton,
 			g.helpButton),
 		container.NewVBox(
 			g.soundSelect,
@@ -90,7 +93,7 @@ func (g *gui) makeUI() fyne.CanvasObject {
 func (g *gui) makeWindow(a fyne.App) fyne.Window {
 	w := a.NewWindow("main.gui.go")
 	g.win = w
-	w.Resize(fyne.NewSize(400, 492))
+	w.Resize(fyne.NewSize(404, 514))
 	w.SetContent(g.makeUI())
 	return w
 }

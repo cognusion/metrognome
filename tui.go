@@ -27,6 +27,7 @@ func init() {
 	runTUIfunc = runTUI
 
 	pflag.BoolVarP(&terminalUI, "terminal", "t", terminalUIDefault, "Use the TUI is used instead of the GUI?")
+	pflag.StringVar(&startSound, "sound", "Woodblock", "Starting sound.")
 	pflag.Int32Var(&tempoBPM, "tempo", 60, "Tempo BPM to start with (TUI and GUI)")
 	pflag.Int32Var(&tempoDelta, "delta", 10, "BPM steps when doing up or down in tempo (TUI and GUI)")
 	pflag.Int32Var(&beatsPerMeasure, "beats", 4, "Beats-per-measure to start with (TUI and GUI)")
@@ -81,6 +82,7 @@ type keyMap struct {
 	Pause key.Binding
 	Mute  key.Binding
 	Drift key.Binding
+	Pan   key.Binding
 	Help  key.Binding
 	Quit  key.Binding
 }
@@ -92,7 +94,7 @@ func (k keyMap) ShortHelp() []key.Binding {
 func (k keyMap) FullHelp() [][]key.Binding {
 	// trying to keep each column <= 3 lines
 	return [][]key.Binding{
-		{k.Up, k.Down},             // first column
+		{k.Up, k.Down, k.Pan},      // first column
 		{k.Pause, k.Mute, k.Drift}, // second column
 		{k.Help, k.Quit},           // third column
 	}
@@ -110,6 +112,10 @@ var keys = keyMap{
 	Pause: key.NewBinding(
 		key.WithKeys("p"),
 		key.WithHelp("p", "Pause/Resume"),
+	),
+	Pan: key.NewBinding(
+		key.WithKeys("r"),
+		key.WithHelp("r", "Pan/Unpan"),
 	),
 	Mute: key.NewBinding(
 		key.WithKeys("m"),
@@ -160,7 +166,7 @@ func runTUI(g *gnome.Gnome) {
 
 	// Get a buffer and pass it on
 	buff = gnome.RPool.Get()
-	buff.Reset(maracasData)
+	buff.Reset(*sounds[startSound])
 
 	// g is always nil, but this makes the compiler happy since we are
 	// passing in the nil reference to reuse.
@@ -268,6 +274,11 @@ func (g tuiGnome) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, g.keys.Drift):
 			// Drift
 			g.displayDrift = !g.displayDrift
+
+		case key.Matches(msg, g.keys.Pan):
+			// Pan
+			g.Gnome.Pan()
+			g.lastMessage = "PAN"
 		}
 
 	case tea.WindowSizeMsg:

@@ -39,6 +39,7 @@ Yes! If you run `metrognome` from the command-line, check out the options!
 $ ./metrognome -h
 Usage of ./metrognome:
   -t, --terminal      Use the TUI is used instead of the GUI?
+      --sound string  Starting sound. (default "Woodblock")
       --tempo int32   Tempo BPM to start with (TUI and GUI) (default 60)
       --delta int32   BPM steps when doing up or down in tempo (TUI and GUI) (default 10)
       --beats int32   Beats-per-measure to start with (TUI and GUI) (default 4)

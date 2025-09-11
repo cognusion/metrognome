@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 
@@ -33,9 +34,11 @@ var (
 	runTUIfunc func(*gnome.Gnome)
 
 	// global tunables
-	tempoBPM        int32 = 60
-	tempoDelta      int32 = 10
-	beatsPerMeasure int32 = 4
+	tempoBPM        int32  = 60
+	tempoDelta      int32  = 10
+	beatsPerMeasure int32  = 4
+	startSound      string = "Woodblock"
+	panSpeakers     bool
 )
 
 func init() {
@@ -48,6 +51,13 @@ func init() {
 func main() {
 	// to help debug WASM problems, all CLI stuff moved to init()@tui.go
 
+	// Sanity check startSound
+	if _, ok := sounds[startSound]; !ok {
+		fmt.Printf("Requested sound '%s' is not valid. Must be one of: %s\n", startSound, strings.Join(sounds.Keys(), ", "))
+		os.Exit(1)
+	}
+
+	// Choose our adventure
 	if terminalUI {
 		// TUI!!
 		if runTUIfunc == nil {
@@ -105,7 +115,17 @@ func (g *gui) setupActions() {
 
 	// Pull the list of sounds and set the picker :)
 	g.soundSelect.Options = sounds.Keys()
-	g.soundSelect.Selected = sounds.Keys()[len(sounds.Keys())-1]
+	g.soundSelect.Selected = startSound
+	g.soundSelect.OnChanged = func(sound string) {
+		// Get a buffer and pass it on
+		buff := gnome.RPool.Get()
+		buff.Reset(*sounds[sound])
+		err := mg.ReplaceStreamerFromBuffer(buff)
+		if err != nil {
+			dialog.ShowError(err, g.win)
+			return
+		}
+	}
 	g.soundSelect.Refresh()
 
 	// Set up the time signature picker
@@ -196,7 +216,7 @@ func (g *gui) gnomeSetup() (*gnome.Gnome, error) {
 
 	// Get a buffer and pass it on
 	buff = gnome.RPool.Get()
-	buff.Reset(woodblockData)
+	buff.Reset(*sounds[startSound])
 
 	return gnome.NewGnomeFromBuffer(buff, gnome.NewTimeSignature(beatsPerMeasure, 4, tempoBPM), tf)
 
@@ -268,4 +288,14 @@ func (g *gui) helpTap() {
 	if err != nil {
 		dialog.ShowError(err, g.win)
 	}
+}
+
+func (g *gui) panTap() {
+	mg.Pan()
+	if g.panButton.Text == "Pan" {
+		g.panButton.Text = "Unpan"
+	} else {
+		g.panButton.Text = "Pan"
+	}
+	g.panButton.Refresh()
 }
