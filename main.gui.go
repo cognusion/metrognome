@@ -24,6 +24,7 @@ type gui struct {
 	pauseButton   *widget.Button
 	pb            *widget.ProgressBar
 	restartButton *widget.Button
+	soundSelect   *widget.Select
 	startButton   *widget.Button
 	statLabel     *widget.Label
 	stopButton    *widget.Button
@@ -54,6 +55,7 @@ func (g *gui) makeUI() fyne.CanvasObject {
 	g.pauseButton = widget.NewButtonWithIcon("Pause", theme.MediaPauseIcon(), g.pauseTap)
 	g.pb = &widget.ProgressBar{Value: 0.000000}
 	g.restartButton = widget.NewButtonWithIcon("Restart", theme.MediaReplayIcon(), g.restartTap)
+	g.soundSelect = &widget.Select{Options: []string{"Woodblock 1", ""}, Selected: "Woodblock 1", OnChanged: func(s string) {}}
 	g.startButton = widget.NewButtonWithIcon("Start", theme.MediaPlayIcon(), g.startTap)
 	g.statLabel = &widget.Label{Text: "", TextStyle: fyne.TextStyle{Bold: true, Italic: true, Monospace: true, Symbol: false, TabWidth: 0, Underline: false}, Alignment: 1, Wrapping: 0}
 	g.stopButton = widget.NewButtonWithIcon("Stop", theme.MediaStopIcon(), g.stopTap)
@@ -72,6 +74,7 @@ func (g *gui) makeUI() fyne.CanvasObject {
 			g.muteButton,
 			g.helpButton),
 		container.NewVBox(
+			g.soundSelect,
 			g.gnomeSelect,
 			g.gnomes))
 
@@ -87,7 +90,7 @@ func (g *gui) makeUI() fyne.CanvasObject {
 func (g *gui) makeWindow(a fyne.App) fyne.Window {
 	w := a.NewWindow("main.gui.go")
 	g.win = w
-	w.Resize(fyne.NewSize(396, 474))
+	w.Resize(fyne.NewSize(400, 492))
 	w.SetContent(g.makeUI())
 	return w
 }

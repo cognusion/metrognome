@@ -2,9 +2,7 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"net/url"
-	"slices"
 	"strconv"
 	"strings"
 
@@ -27,9 +25,6 @@ var (
 	// this is our 'gnome
 	mg *gnome.Gnome
 
-	// a map to coordinate the gnomes.
-	gnomes randomByteMap
-
 	// help is here
 	helpURL *url.URL
 
@@ -45,22 +40,7 @@ var (
 
 func init() {
 	// Map the Gnomes! (see embeds.go)
-	gnomes = map[string]*[]byte{
-		"Accordion":   &gnomeAcc,
-		"Bagpipes":    &gnomeBag,
-		"Bomb":        &gnomeBomb,
-		"Double Bass": &gnomeBass,
-		"Drum Sticks": &gnomeDrum,
-		"Drums":       &gnomeDrums2,
-		"Guitar":      &gnomeGuitar,
-		"Harp":        &gnomeHarp,
-		"Maracas":     &gnomeMaracas,
-		"Piano":       &gnomePiano,
-		"Saxophone":   &gnomeSax,
-		"Trumpet":     &gnomeTrumpet,
-		"Tuba":        &gnomeTuba,
-		"Violin":      &gnomeViolin,
-	}
+	// Map the Sounds! (see embeds.go)
 
 	helpURL, _ = url.Parse("https://github.com/cognusion/metrognome/blob/main/help/README.md")
 }
@@ -90,35 +70,6 @@ func main() {
 
 		w.ShowAndRun()
 	}
-}
-
-// randomByteMap is a map-string-pointer-to-byte-slice, that supports
-// returning random values, and has an emitter of keys built-in. Not goro-safe.
-type randomByteMap map[string]*[]byte
-
-// Random returns a pseudorandom value.
-func (r randomByteMap) Random() *[]byte {
-	//#nosec G404 -- We use math/rand deliberately. We are picking psudeorandom map elements. Chill.
-	k := rand.Intn(len(r))
-	for _, x := range r {
-		if k == 0 {
-			return x
-		}
-		k--
-	}
-	panic("impossible") // because rules.
-}
-
-// Keys returns a sorted list of the keys.
-func (r randomByteMap) Keys() []string {
-	var keys = make([]string, len(r))
-	c := 0
-	for k := range r {
-		keys[c] = k
-		c++
-	}
-	slices.Sort(keys)
-	return keys
 }
 
 func beatString(beatsPerMeasure int32) string {
@@ -151,6 +102,11 @@ func (g *gui) setupActions() {
 	// Pick a pseudorandom gnome to show
 	g.gnomes.Resource = &fyne.StaticResource{StaticContent: *gnomes.Random()}
 	g.gnomes.Refresh()
+
+	// Pull the list of sounds and set the picker :)
+	g.soundSelect.Options = sounds.Keys()
+	g.soundSelect.Selected = sounds.Keys()[len(sounds.Keys())-1]
+	g.soundSelect.Refresh()
 
 	// Set up the time signature picker
 	// We pre-populate the most commons sigs, but support entry too.
@@ -240,7 +196,7 @@ func (g *gui) gnomeSetup() (*gnome.Gnome, error) {
 
 	// Get a buffer and pass it on
 	buff = gnome.RPool.Get()
-	buff.Reset(wavData)
+	buff.Reset(woodblockData)
 
 	return gnome.NewGnomeFromBuffer(buff, gnome.NewTimeSignature(beatsPerMeasure, 4, tempoBPM), tf)
 

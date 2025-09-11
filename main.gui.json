@@ -3,8 +3,8 @@
     "Version": "1"
   },
   "Metadata": {
-    "height": 474,
-    "width": 396
+    "height": 492,
+    "width": 400
   },
   "Screens": [
     {
@@ -295,6 +295,20 @@
                     "Type": "*fyne.Container",
                     "Layout": "VBox",
                     "Objects": [
+                      {
+                        "Type": "*widget.Select",
+                        "Name": "soundSelect",
+                        "Struct": {
+                          "Hidden": false,
+                          "Alignment": 0,
+                          "Selected": "Woodblock 1",
+                          "Options": [
+                            "Woodblock 1",
+                            ""
+                          ],
+                          "PlaceHolder": "(Select one)"
+                        }
+                      },
                       {
                         "Type": "*widget.Select",
                         "Name": "gnomeSelect",

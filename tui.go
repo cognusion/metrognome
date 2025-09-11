@@ -160,7 +160,7 @@ func runTUI(g *gnome.Gnome) {
 
 	// Get a buffer and pass it on
 	buff = gnome.RPool.Get()
-	buff.Reset(wavData)
+	buff.Reset(maracasData)
 
 	// g is always nil, but this makes the compiler happy since we are
 	// passing in the nil reference to reuse.
