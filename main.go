@@ -14,7 +14,6 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/cognusion/go-gnome"
 	"github.com/cognusion/go-recyclable"
-	"github.com/spf13/pflag"
 )
 
 const (
@@ -67,13 +66,7 @@ func init() {
 }
 
 func main() {
-	pflag.BoolVarP(&terminalUI, "terminal", "t", terminalUIDefault, "Use the TUI is used instead of the GUI?")
-	pflag.Int32Var(&tempoBPM, "tempo", 60, "Tempo BPM to start with (TUI and GUI)")
-	pflag.Int32Var(&tempoDelta, "delta", 10, "BPM steps when doing up or down in tempo (TUI and GUI)")
-	pflag.Int32Var(&beatsPerMeasure, "beats", 4, "Beats-per-measure to start with (TUI and GUI)")
-
-	pflag.CommandLine.SortFlags = false // we want them in the order we put them
-	pflag.Parse()
+	// to help debug WASM problems, all CLI stuff moved to init()@tui.go
 
 	if terminalUI {
 		// TUI!!
@@ -181,7 +174,12 @@ func (g *gui) setupActions() {
 	g.labelBox.Refresh()
 
 	// Setup the Gnome!
-	g.gnomeSetup()
+	var gerr error
+	mg, gerr = g.gnomeSetup()
+	if gerr != nil {
+		// We are deep in setup. An error here is terminal.
+		panic(gerr)
+	}
 
 	// Setup the stat label
 	g.ChangeStat()
@@ -229,9 +227,8 @@ func (g *gui) ChangeStat() {
 }
 
 // gnomeSetup gets a lot of the Gnome-specific setup stuff out of the main setup function.
-func (g *gui) gnomeSetup() {
+func (g *gui) gnomeSetup() (*gnome.Gnome, error) {
 	var (
-		err  error
 		tf   func(int)
 		buff *recyclable.Buffer
 	)
@@ -245,10 +242,8 @@ func (g *gui) gnomeSetup() {
 	buff = gnome.RPool.Get()
 	buff.Reset(wavData)
 
-	mg, err = gnome.NewGnomeFromBuffer(buff, gnome.NewTimeSignature(beatsPerMeasure, 4, tempoBPM), tf)
-	if err != nil {
-		panic(err)
-	}
+	return gnome.NewGnomeFromBuffer(buff, gnome.NewTimeSignature(beatsPerMeasure, 4, tempoBPM), tf)
+
 }
 
 func (g *gui) startTap() {

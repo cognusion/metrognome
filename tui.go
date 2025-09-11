@@ -4,9 +4,12 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"runtime/debug"
 	"strings"
 	"time"
 
+	"fyne.io/fyne/v2/app"
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
@@ -14,6 +17,7 @@ import (
 	"github.com/cognusion/go-gnome"
 	"github.com/cognusion/go-recyclable"
 	"github.com/muesli/reflow/wordwrap"
+	"github.com/spf13/pflag"
 )
 
 func init() {
@@ -21,6 +25,54 @@ func init() {
 	// it gets attached IFF !wasm to keep all of this
 	// from the WASM build
 	runTUIfunc = runTUI
+
+	pflag.BoolVarP(&terminalUI, "terminal", "t", terminalUIDefault, "Use the TUI is used instead of the GUI?")
+	pflag.Int32Var(&tempoBPM, "tempo", 60, "Tempo BPM to start with (TUI and GUI)")
+	pflag.Int32Var(&tempoDelta, "delta", 10, "BPM steps when doing up or down in tempo (TUI and GUI)")
+	pflag.Int32Var(&beatsPerMeasure, "beats", 4, "Beats-per-measure to start with (TUI and GUI)")
+	version := pflag.BoolP("version", "v", false, "Display version information and exit")
+
+	pflag.CommandLine.SortFlags = false // we want them in the order we put them
+	pflag.Parse()
+
+	if *version {
+		var (
+			mgv string
+			bv  string
+			gv  string
+			fv  string
+			btv string
+		)
+		a := app.New()
+		mgv = fmt.Sprintf("v%s.%d", a.Metadata().Version, a.Metadata().Build)
+		a.Quit()
+
+		if info, ok := debug.ReadBuildInfo(); ok {
+			bv = info.Main.Version
+			gv = info.GoVersion
+			di := 2
+			for _, d := range info.Deps {
+				switch d.Path {
+				case "fyne.io/fyne/v2":
+					fv = d.Version
+					di--
+				case "github.com/charmbracelet/bubbletea":
+					btv = d.Version
+					di--
+				}
+				if di <= 0 {
+					break
+				}
+			}
+		}
+
+		fmt.Printf("MetroGnome version: %s\n", mgv)
+		fmt.Printf("     Build version: %s\n", bv)
+		fmt.Printf("        Go version: %s\n", gv)
+		fmt.Printf("      Fyne version: %s\n", fv)
+		fmt.Printf("Bubble Tea version: %s\n", btv)
+		os.Exit(0)
+	}
 }
 
 type keyMap struct {
