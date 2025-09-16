@@ -38,7 +38,6 @@ var (
 	tempoDelta      int32  = 10
 	beatsPerMeasure int32  = 4
 	startSound      string = "Woodblock"
-	panSpeakers     bool
 )
 
 func init() {
