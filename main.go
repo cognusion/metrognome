@@ -12,7 +12,7 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 	"github.com/cognusion/go-gnome"
-	"github.com/cognusion/go-recyclable"
+	"github.com/cognusion/go-recyclable/v2"
 )
 
 const (

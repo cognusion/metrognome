@@ -15,7 +15,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/cognusion/go-gnome"
-	"github.com/cognusion/go-recyclable"
+	"github.com/cognusion/go-recyclable/v2"
 	"github.com/muesli/reflow/wordwrap"
 	"github.com/spf13/pflag"
 )

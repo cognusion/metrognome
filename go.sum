@@ -26,10 +26,10 @@ github.com/charmbracelet/x/term v0.2.1 h1:AQeHeLZ1OqSXhrAWpYUtZyX1T3zVxfpZuEQMIQ
 github.com/charmbracelet/x/term v0.2.1/go.mod h1:oQ4enTYFV7QN4m0i9mzHrViD7TQKvNEEkHUMCmsxdUg=
 github.com/clipperhouse/uax29/v2 v2.2.0 h1:ChwIKnQN3kcZteTXMgb1wztSgaU+ZemkgWdohwgs8tY=
 github.com/clipperhouse/uax29/v2 v2.2.0/go.mod h1:EFJ2TJMRUaplDxHKj1qAEhCtQPW2tJSwu5BF98AuoVM=
-github.com/cognusion/go-gnome v0.6.1 h1:/A3F4VVP/UmSFmZjytSoqd0MIWGw9l4AZzJhSJWLv8U=
-github.com/cognusion/go-gnome v0.6.1/go.mod h1:akRnV5HfDGsgZAG+sDt+izfdWv4sE7D3Kh1V1dgzhco=
-github.com/cognusion/go-recyclable v1.3.0 h1:9jusb7O06Df3dNEwbmWTmbNXM0tuvFo4qa4AvPqbxEo=
-github.com/cognusion/go-recyclable v1.3.0/go.mod h1:UPIqjekn6iTRbI8dj3SGpictG8mL1zoH0r+91OulOnw=
+github.com/cognusion/go-gnome v0.7.0 h1:CBGLx9BQTe3i8jG+QlJ4++UYED0KU0AKsCS1U32aY2A=
+github.com/cognusion/go-gnome v0.7.0/go.mod h1:PpU5q9gUeFzh8lafW2OBRFcggz6/iQVX7nY03VaeYbU=
+github.com/cognusion/go-recyclable/v2 v2.0.0 h1:K4yB89o7pFnvnqFLIm+phBZa1WRq2iAzdfYaIF0i+6A=
+github.com/cognusion/go-recyclable/v2 v2.0.0/go.mod h1:VgtbK2uRMx6W2lF1qmtQD9Fl5+ZaISiLNsqe8d14AYQ=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/ebitengine/oto/v3 v3.4.0 h1:br0PgASsEWaoWn38b2Goe7m1GKFYfNgnsjSd5Gg+/bQ=
