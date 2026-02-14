@@ -28,8 +28,8 @@ github.com/clipperhouse/displaywidth v0.10.0 h1:GhBG8WuerxjFQQYeuZAeVTuyxuX+Urai
 github.com/clipperhouse/displaywidth v0.10.0/go.mod h1:XqJajYsaiEwkxOj4bowCTMcT1SgvHo9flfF3jQasdbs=
 github.com/clipperhouse/uax29/v2 v2.6.0 h1:z0cDbUV+aPASdFb2/ndFnS9ts/WNXgTNNGFoKXuhpos=
 github.com/clipperhouse/uax29/v2 v2.6.0/go.mod h1:Wn1g7MK6OoeDT0vL+Q0SQLDz/KpfsVRgg6W7ihQeh4g=
-github.com/cognusion/go-gnome v0.7.1 h1:+EklgjnIgRAiLBjBzMOhEU2SxedhFKk+S7Bsn9ev6dg=
-github.com/cognusion/go-gnome v0.7.1/go.mod h1:MOmKl7di+0U74M+DBlVFfpcU8t5tUdNmZhLnm6rpiUU=
+github.com/cognusion/go-gnome v0.7.2 h1:eyIHDpq+9JT2h6wLkQ2ovXbumR91lUEMrVXUZnypCbY=
+github.com/cognusion/go-gnome v0.7.2/go.mod h1:MOmKl7di+0U74M+DBlVFfpcU8t5tUdNmZhLnm6rpiUU=
 github.com/cognusion/go-recyclable/v2 v2.0.1 h1:Dnw0GqLS7dPle8cPYI+w9Ih0mkxhTkjPl/NJ3Q5XBxM=
 github.com/cognusion/go-recyclable/v2 v2.0.1/go.mod h1:VgtbK2uRMx6W2lF1qmtQD9Fl5+ZaISiLNsqe8d14AYQ=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
